@@ -170,22 +170,19 @@
         <h1>🎓 YouTube Edu</h1>
         <p class="subtitle">Discover random educational content to improve your algorithm feed</p>
         
-        <button class="button" onclick="getRandomTopic()">Random Topic</button> 
-        <br>
+        <button class="button" id="randomizeBtn" onclick="randomizeAll()">Randomize</button>
         <br>
         <button class="button" onclick="goToYouTube()">Go to YouTube</button>
         <br>
-        <br>
         <button class="button" onclick="showTopicManager()">Manage Topics</button>
-        
-        <div class="current-topic" id="currentTopic">
-            Click "Random Topic" to generate something new to learn!
+        <br>
+        <div class="current-topic" id="unifiedQueryBox" style="margin: 30px 0 30px 0; font-weight: bold; font-size: 1.2em;">
+            Click "Randomize" to generate a topic and classifier!
         </div>
-        <div style="margin-top: 10px;">
-            <button class="button" id="newClassifierBtn" onclick="getNewClassifier()">New Classifier</button>
+        <div style="margin-top: 40px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+            <button class="button small" onclick="getRandomTopic()">Random Topic</button>
+            <button class="button small" id="newClassifierBtn" onclick="getNewClassifier()">Random Classifier</button>
         </div>
-        <div id="currentClassifier" class="current-topic" style="margin-top: 10px; font-style: normal; font-weight: bold;"></div>
-        
         <div class="auto-redirect">
             <label>
                 <input type="checkbox" id="autoRedirect"> 

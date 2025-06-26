@@ -38,17 +38,20 @@ let currentTopic = '';
 
 // Education content classifiers to enhance YouTube search
 const educationContentClassifiers = [
-    'learning',
-    'facts',
-    'documentary',
-    'introduction',
-    'explained',
-    'guide',
-    'for beginners',
-    'tutorial',
-    'crash course',
-    'basics'
-];
+    'principle', 
+    'tutorial', 
+    'strategy', 
+    'how to', 
+    'quick start', 'what is', 'crash course', 
+    'overview', 'concept', 'deep dive', 'step by step', 
+    'explainer', 'instructional', 'exam prep', 'breakdown', 
+    'explanation', 'basics', 'academic', 'study guide', 'for beginners', 
+    'seminar', 'how-to', '101', 'masterclass', 'course', 'review', 'educational', 
+    'research', 'walkthrough', 'case study', 'study', 'practice', 'introduction', 
+    'demo', 'explained', 'guide', 'lesson', 'lecture', 'learning', 'drill', 
+    'method', 'workshop', 'technique', 'experiment', 'analysis', 
+    'beginner friendly', 'test prep', 'documentary', 'presentation', 
+    'demonstration', 'fundamentals', 'theory', 'training', 'facts'];
 
 let currentClassifier = '';
 
@@ -57,20 +60,21 @@ function getRandomClassifier() {
     return educationContentClassifiers[idx];
 }
 
-function updateClassifierDisplay() {
-    const classifierDiv = document.getElementById('currentClassifier');
-    if (classifierDiv) {
-        classifierDiv.textContent = `Classifier: "${currentClassifier}"`;
+function updateUnifiedQueryDisplay() {
+    const box = document.getElementById('unifiedQueryBox');
+    if (box) {
+        if (currentTopic && currentClassifier) {
+            box.textContent = `"${currentTopic}"  —  ${currentClassifier}`;
+        } else {
+            box.textContent = 'Click "Randomize" to generate a topic and classifier!';
+        }
     }
 }
 
-function getNewClassifier() {
-    let newClassifier;
-    do {
-        newClassifier = getRandomClassifier();
-    } while (educationContentClassifiers.length > 1 && newClassifier === currentClassifier);
-    currentClassifier = newClassifier;
-    updateClassifierDisplay();
+function randomizeAll() {
+    getRandomTopic(true); // true = silent (don't update YouTube box)
+    getNewClassifier(true); // true = silent
+    updateUnifiedQueryDisplay();
 }
 
 // Initialize topics from localStorage or use defaults
@@ -92,17 +96,20 @@ function saveTopicsToStorage() {
     localStorage.setItem('youtubeEduTopics', JSON.stringify(educationalTopics));
 }
 
-function getRandomTopic() {
+function getRandomTopic(silent) {
     if (educationalTopics.length === 0) {
-        document.getElementById('currentTopic').textContent = '⚠️ No topics available! Add some topics first.';
+        currentTopic = '';
+        updateUnifiedQueryDisplay();
+        if (!silent) {
+            document.getElementById('unifiedQueryBox').textContent = '⚠️ No topics available! Add some topics first.';
+        }
         return;
     }
     const randomIndex = Math.floor(Math.random() * educationalTopics.length);
     currentTopic = educationalTopics[randomIndex];
-    document.getElementById('currentTopic').textContent = `"${currentTopic}"`;
-    // Do not change classifier here
+    if (!silent) updateUnifiedQueryDisplay();
     // Auto-redirect if checkbox is checked
-    if (document.getElementById('autoRedirect').checked) {
+    if (!silent && document.getElementById('autoRedirect').checked) {
         setTimeout(() => {
             goToYouTube();
         }, 1500);
@@ -111,7 +118,7 @@ function getRandomTopic() {
 
 function goToYouTube() {
     if (!currentTopic) {
-        getRandomTopic();
+        getRandomTopic(true);
         setTimeout(() => {
             goToYouTube();
         }, 100);
@@ -213,5 +220,14 @@ window.onclick = function(event) {
 // Initialize everything when page loads
 initializeTopics();
 currentClassifier = getRandomClassifier();
-updateClassifierDisplay();
-getRandomTopic(); 
+getRandomTopic(true); // silent on load
+updateUnifiedQueryDisplay();
+
+function getNewClassifier(silent) {
+    let newClassifier;
+    do {
+        newClassifier = getRandomClassifier();
+    } while (educationContentClassifiers.length > 1 && newClassifier === currentClassifier);
+    currentClassifier = newClassifier;
+    if (!silent) updateUnifiedQueryDisplay();
+} 
